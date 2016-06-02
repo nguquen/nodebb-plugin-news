@@ -1,0 +1,21 @@
+{
+  "name": "nodebb-plugin-news",
+  "version": "0.0.1",
+  "description": "Add new route /news that display feature topic",
+  "main": "plugin.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nguquen/nodebb-plugin-news"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "news"
+  ],
+  "author": "nguquen@botbie.com",
+  "license": "MIT",
+  "dependencies": {},
+  "nbbpm": {
+    "compatibility": "^0.7.0 || ^0.8.0 || ^0.9.0 || ^1.0.0"
+  }
+}
