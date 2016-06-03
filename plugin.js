@@ -1,10 +1,14 @@
 SocketPlugins = module.parent.require('./socket.io/plugins');
 topics = module.parent.require('./topics');
+posts = module.parent.require('./posts');
+user = module.parent.require('./user');
 db = module.parent.require('./database');
 privileges = module.parent.require('./privileges');
 async = module.parent.require('async');
 meta = module.parent.require('./meta');
 helpers = module.parent.require('./controllers/helpers');
+utils = module.parent.require('../public/src/utils');
+S = require('string');
 
 var newsPlugin = {};
 var pluginName = "nodebb-plugin-news";
@@ -31,15 +35,46 @@ newsPlugin.deactivate = function(id) {
 	}
 };
 
+newsPlugin.renderHomepage = function(params) {
+	newsPlugin.render(params.req, params.res, params.next);
+};
+
 newsPlugin.render = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getTopicsFromSet('topics:news', req.uid, 0, stop, function(err, data) {
+	async.waterfall([function (next) {
+		topics.getTopicsFromSet('topics:news', req.uid, 0, stop, next);
+	},
+	function (data, next) {
+		if (!Array.isArray(data.topics) || !data.topics.length) {
+			return callback(null, data);
+		}
+		var mainPids = [];
+		data.topics.forEach(function(topic) {
+			if (topic) {
+				mainPids.push(topic.mainPid);
+			}
+		});
+		posts.getPostsByPids(mainPids, req.uid, function (err, posts) {
+			if (err) {
+				return next(err);
+			}
+			for (var i = 0; i < data.topics.length; ++i) {
+				if (data.topics[i]) {
+					data.topics[i].mainPost = posts[i];
+				}
+			}
+			next(null, data);
+		});
+	}], function (err, data) {
 		if (err) {
 			return next(err);
 		}
-		console.log("data: " + JSON.stringify(data));
-		// data['feeds:disableRSS'] = true;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: 'News'}]);
+		// console.log("data: " + JSON.stringify(data));
+		// data['feeds:disableRSS'] = false;
+		if (req.path.startsWith('/api/news') || req.path.startsWith('/news')) {
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: 'News'}]);
+			data.title = "News";
+		}
 		res.render('news', data);
 	});
 };

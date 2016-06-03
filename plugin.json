@@ -5,11 +5,15 @@
     {"hook": "static:app.load", "method": "init"},
     {"hook": "filter:topic.thread_tools", "method": "addThreadTools"},
     {"hook": "action:plugin.activate", "method": "activate"},
-    {"hook": "action:plugin.deactivate", "method": "deactivate"}
+    {"hook": "action:plugin.deactivate", "method": "deactivate"},
+    {"hook": "action:homepage.get:news", "method": "renderHomepage"}
   ],
   "templates": "./templates",
   "staticDir": "./public",
   "scripts": [
     "public/lib/main.js"
+  ],
+  "less": [
+    "public/style.less"
   ]
 }
