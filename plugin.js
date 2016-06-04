@@ -1,21 +1,24 @@
-SocketPlugins = module.parent.require('./socket.io/plugins');
-topics = module.parent.require('./topics');
-posts = module.parent.require('./posts');
-user = module.parent.require('./user');
-db = module.parent.require('./database');
-privileges = module.parent.require('./privileges');
-async = module.parent.require('async');
-meta = module.parent.require('./meta');
-helpers = module.parent.require('./controllers/helpers');
-utils = module.parent.require('../public/src/utils');
-translator = require.main.require('./public/src/modules/translator');
-S = require('string');
+"use strict";
 
+var SocketPlugins = module.parent.require('./socket.io/plugins');
+var topics = module.parent.require('./topics');
+var posts = module.parent.require('./posts');
+var user = module.parent.require('./user');
+var db = module.parent.require('./database');
+var privileges = module.parent.require('./privileges');
+var async = module.parent.require('async');
+var meta = module.parent.require('./meta');
+var helpers = module.parent.require('./controllers/helpers');
+var utils = module.parent.require('../public/src/utils');
+var translator = require.main.require('./public/src/modules/translator');
+var categories = module.parent.require('./categories');
+var settings = module.parent.require('./settings');
 var newsPlugin = {};
-var pluginName = "nodebb-plugin-news";
+var defaultSettings = { opacity: '1.0', textShadow: 'none', name:"nodebb-plugin-news" };
 
 newsPlugin.init = function(params, callback) {
-	console.log(pluginName + ":init");
+	newsPlugin.settings = new settings('recentcards', '1.0.0', defaultSettings);
+	console.log(newsPlugin.settings.get("name") + ":init");
 	var router = params.router;
 	var middleware = params.middleware;
 	router.get('/news', middleware.buildHeader, newsPlugin.render);
@@ -27,14 +30,14 @@ newsPlugin.init = function(params, callback) {
 };
 
 newsPlugin.activate = function(id) {
-	if (id === pluginName) {
-		console.log(pluginName + ":activate");
+	if (id === newsPlugin.settings.get("name")) {
+		console.log(newsPlugin.settings.get("name") + ":activate");
 	}
 };
 
 newsPlugin.deactivate = function(id) {
-	if (id === pluginName) {
-		console.log(pluginName + ":deactivate");
+	if (id === newsPlugin.settings.get("name")) {
+		console.log(newsPlugin.settings.get("name") + ":deactivate");
 	}
 };
 
@@ -98,6 +101,37 @@ newsPlugin.render = function(req, res, next) {
 		translator.translate('[[global:home]]', function(translated) {
 			data.title = translated;
 			next(null, data);
+		});
+	},
+	function (data, next) {
+		topics.getTopicsFromSet('topics:recent', req.uid, 0, 19, function(err, topics) {
+			if (err) {
+				return next(err);
+			}
+			var i = 0, cids = [], finalTopics = [];
+			while (finalTopics.length < 4 && i < topics.topics.length) {
+				var cid = parseInt(topics.topics[i].cid, 10);
+
+				if (cids.indexOf(cid) === -1) {
+					cids.push(cid);
+					finalTopics.push(topics.topics[i]);
+				}
+
+				i++;
+			}
+			async.each(finalTopics, function (topic, next) {
+				categories.getCategoryField(topic.cid, 'image', function (err, image) {
+					topic.category.backgroundImage = image;
+					next();
+				});
+			}, function () {
+				data.recentTopics = finalTopics;
+				data.recentCards = {
+					opacity: newsPlugin.settings.get('opacity'),
+					textShadow: newsPlugin.settings.get('shadow')
+				};
+				next(null, data);
+			});
 		});
 	}], function (err, data) {
 		if (err) {

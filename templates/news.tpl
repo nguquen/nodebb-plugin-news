@@ -1,3 +1,42 @@
+<!-- Recent Cards plugin -->
+<ul class="categories">
+	<p>Recent Topics</p>
+</ul>
+
+<div class="row recent-cards" itemscope itemtype="http://www.schema.org/ItemList">
+	<!-- BEGIN recentTopics -->
+	<div component="categories/category" class="<!-- IF recentTopics.category.class -->{recentTopics.category.class}<!-- ELSE -->col-md-3 col-sm-6 col-xs-12<!-- ENDIF recentTopics.category.class --> category-item" data-cid="{recentTopics.category.cid}" data-numRecentReplies="{recentTopics.category.numRecentReplies}" style="text-shadow:{recentCards.textShadow};">
+		<meta itemprop="name" content="{recentTopics.category.name}">
+
+		<div class="category-icon">
+			<div class="bg" style="opacity:{recentCards.opacity};<!-- IF recentTopics.category.backgroundImage -->background-image: url({recentTopics.category.backgroundImage});<!-- ELSE --><!-- IF recentTopics.category.bgColor -->background-color: {recentTopics.category.bgColor};<!-- ENDIF recentTopics.category.bgColor --><!-- ENDIF recentTopics.category.backgroundImage -->"></div>
+			<a style="color: {recentTopics.category.color};" href="{config.relative_path}/topic/{recentTopics.slug}" itemprop="url">
+				<div
+					id="category-{recentTopics.category.cid}" class="category-header category-header-image-{recentTopics.category.imageClass}"
+					style="color: {recentTopics.category.color};"
+				>
+					<!-- IF recentTopics.category.icon -->
+					<div><i class="fa {recentTopics.category.icon} fa-4x hidden-xs"></i></div>
+					<!-- ENDIF recentTopics.category.icon -->
+				</div>
+			</a>
+
+			<div class="category-box">
+				<div class="category-info" style="color: {recentTopics.category.color};">
+					<a href="{config.relative_path}/topic/{recentTopics.slug}" itemprop="url" style="color: {recentTopics.category.color};">
+						<h4><!-- IF recentTopics.category.icon --><i class="fa {recentTopics.category.icon} visible-xs-inline"></i> <!-- ENDIF recentTopics.category.icon -->{recentTopics.title}</h4>
+						<div class="description" itemprop="description"><strong>{recentTopics.category.name}</strong> <span class="timeago" title="{recentTopics.teaser.timestampISO}"></span></div>
+					</a>
+				</div>
+			</div>
+
+			<span class="post-count" style="color: {recentTopics.category.color};">{recentTopics.postcount}</span>
+		</div>
+	</div>
+	<!-- END recentTopics -->
+</div>
+<hr />
+
 <!-- IF breadcrumbs.length -->
 <ol class="breadcrumb">
 	<!-- BEGIN breadcrumbs -->
