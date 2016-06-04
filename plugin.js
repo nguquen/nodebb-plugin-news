@@ -74,7 +74,7 @@ newsPlugin.render = function(req, res, next) {
 	},
 	function (data, next) {
 		if (!Array.isArray(data.topics) || !data.topics.length) {
-			return callback(null, data);
+			return next(null, data);
 		}
 		var mainPids = [];
 		data.topics.forEach(function(topic) {
