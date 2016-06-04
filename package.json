@@ -1,5 +1,5 @@
 {
-  "name": "nodebb-plugin-news",
+  "name": "nodebb-plugin-news-botbie",
   "version": "0.0.1",
   "description": "Add new route /news that display feature topic",
   "main": "plugin.js",
@@ -12,7 +12,7 @@
     "plugin",
     "news"
   ],
-  "author": "nguquen@botbie.com",
+  "author": "info@botbie.com",
   "license": "MIT",
   "dependencies": {},
   "nbbpm": {
