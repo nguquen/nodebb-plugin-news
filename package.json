@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-news-botbie",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Add new route /news that display feature topic",
   "main": "plugin.js",
   "repository": {
