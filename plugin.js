@@ -8,6 +8,7 @@ async = module.parent.require('async');
 meta = module.parent.require('./meta');
 helpers = module.parent.require('./controllers/helpers');
 utils = module.parent.require('../public/src/utils');
+translator = require.main.require('./public/src/modules/translator');
 S = require('string');
 
 var newsPlugin = {};
@@ -18,7 +19,9 @@ newsPlugin.init = function(params, callback) {
 	var router = params.router;
 	var middleware = params.middleware;
 	router.get('/news', middleware.buildHeader, newsPlugin.render);
+	router.get('/news/:page', middleware.buildHeader, newsPlugin.render);
 	router.get('/api/news', newsPlugin.render);
+	router.get('/api/news/:page', newsPlugin.render);
 	handleSocketIO();
 	callback();
 };
@@ -40,9 +43,34 @@ newsPlugin.renderHomepage = function(params) {
 };
 
 newsPlugin.render = function(req, res, next) {
-	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	var topicsPerPage = parseInt(meta.config.topicsPerList, 10) || 20;
+	var currentPage = parseInt(req.params.page, 10) || 1;
+	var nextPage = 1;
+	var prevPage = 1;
+	var pages = [];
 	async.waterfall([function (next) {
-		topics.getTopicsFromSet('topics:news', req.uid, 0, stop, next);
+		db.sortedSetCount('topics:news', '-inf', '+inf', next);
+	},
+	function (topicCount, next) {
+		var pageCount = Math.max(1, Math.ceil(topicCount / topicsPerPage));
+		if (currentPage < 1) {
+			currentPage = 1;
+		}
+		if (currentPage > pageCount) {
+			currentPage = pageCount;
+		}
+		var start = (currentPage - 1) * topicsPerPage;
+		var stop = currentPage * topicsPerPage - 1;
+		nextPage = currentPage === pageCount ? false : currentPage + 1;
+		prevPage = currentPage === 1 ? false : currentPage - 1;
+		if (pageCount > 1) {
+			for (var number = 1; number <= pageCount; number++) {
+				var _page = {number: number};
+				if (number === currentPage) _page.currentPage = true;
+				pages.push(_page);
+			}
+		}
+		topics.getTopicsFromSet('topics:news', req.uid, start, stop, next);
 	},
 	function (data, next) {
 		if (!Array.isArray(data.topics) || !data.topics.length) {
@@ -65,43 +93,50 @@ newsPlugin.render = function(req, res, next) {
 			}
 			next(null, data);
 		});
+	},
+	function (data, next) {
+		translator.translate('[[global:home]]', function(translated) {
+			data.title = translated;
+			next(null, data);
+		});
 	}], function (err, data) {
 		if (err) {
 			return next(err);
 		}
-		// console.log("data: " + JSON.stringify(data));
-		// data['feeds:disableRSS'] = false;
-		if (req.path.startsWith('/api/news') || req.path.startsWith('/news')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: 'News'}]);
-			data.title = "News";
-		}
+		data.nextPage = nextPage;
+		data.prevPage = prevPage;
+		data.pages = pages;
 		res.render('news', data);
 	});
 };
 
 newsPlugin.addThreadTools = function(data, callback) {
-	var isNews = parseInt(data.topic.isNews, 10);
-	if (isNews) {
-		data.tools.push({
-			"title": "Remove News",
-			"class": "toggle-mark-news",
-			"icon": "fa-star-o"
-		});
-	} else {
-		data.tools.push({
-			"title": "Mark News",
-			"class": "toggle-mark-news",
-			"icon": "fa-star-o"
-		});
-	}
-	callback(null, data);
+	privileges.topics.isAdminOrMod(data.topic.tid, data.uid, function(err, isAdminOrMod) {
+		var isNews = parseInt(data.topic.isNews, 10);
+		if (isAdminOrMod) {
+			if (isNews) {
+				data.tools.push({
+					"title": "Remove News",
+					"class": "toggle-mark-news",
+					"icon": "fa-star-o"
+				});
+			} else {
+				data.tools.push({
+					"title": "Mark News",
+					"class": "toggle-mark-news",
+					"icon": "fa-star"
+				});
+			}
+		}
+		callback(null, data);
+	});
 };
 
 function handleSocketIO() {
 	SocketPlugins.News = {};
 	SocketPlugins.News.toggleMarkNews = function(socket, data, callback) {
-		privileges.topics.canEdit(data.tid, socket.uid, function(err, canEdit) {
-			if (!canEdit) {
+		privileges.topics.isAdminOrMod(data.tid, socket.uid, function(err, isAdminOrMod) {
+			if (!isAdminOrMod) {
 				return callback(new Error('[[error:no-privileges]]'));
 			}
 

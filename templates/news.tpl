@@ -71,8 +71,48 @@
 					{topics.mainPost.content}
 				</div>
 				<hr />
+				<div class="clearfix">
+					<div class="tags pull-left">
+						<!-- BEGIN tags -->
+						<a href="{config.relative_path}/tags/{tags.value}">
+						<span class="tag-item" data-tag="{topics.tags.value}" style="<!-- IF topics.tags.color -->color: {topics.tags.color};<!-- ENDIF topics.tags.color --><!-- IF topics.tags.bgColor -->background-color: {topics.tags.bgColor};<!-- ENDIF topics.tags.bgColor -->">{topics.tags.value}</span>
+						<span class="tag-topic-count human-readable-number" title="{topics.tags.score}">{topics.tags.score}</span></a>
+						<!-- END tags -->
+					</div>
+					<div class="topic-main-buttons pull-right">
+						<div class="stats hidden-xs">
+							<span component="topic/post-count" class="human-readable-number" title="{topics.postcount}">{topics.postcount}</span><br />
+							<small>[[global:posts]]</small>
+						</div>
+						<div class="stats hidden-xs">
+							<span class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</span><br />
+							<small>[[global:views]]</small>
+						</div>
+						<div class="btn-group action-bar">
+							<a class="btn btn-primary" href="{config.relative_path}/topic/{topics.slug}<!-- IF topics.bookmark -->/{topics.bookmark}<!-- ENDIF topics.bookmark -->" itemprop="url">Let's Discuss</a>
+						</div>
+					</div>
+				</div>
+				<hr />
 			</li>
 			<!-- END topics -->
 		</ul>
+	</div>
+</div>
+<div class="section sectionMain">
+	<div class="PageNav">
+		<nav>
+
+			<!-- IF prevPage -->
+			<a href="/news/{prevPage}" class="btn btn-default">&lt;&lt; Previous</a>
+			<!-- ENDIF prevPage -->
+			<!-- BEGIN pages -->
+			<a href="/news/{pages.number}" class="btn <!-- IF pages.currentPage -->btn-primary<!-- ELSE -->btn-default<!-- ENDIF pages.currentPage -->">{pages.number}</a>
+			<!-- END pages -->
+			<!-- IF nextPage -->
+			<a href="/news/{nextPage}" class="btn btn-default">Next &gt;&gt;</a>
+			<!-- ENDIF nextPage -->
+
+		</nav>
 	</div>
 </div>
