@@ -6,7 +6,8 @@
     {"hook": "filter:topic.thread_tools", "method": "addThreadTools"},
     {"hook": "action:plugin.activate", "method": "activate"},
     {"hook": "action:plugin.deactivate", "method": "deactivate"},
-    {"hook": "action:homepage.get:news", "method": "renderHomepage"}
+    {"hook": "action:homepage.get:news", "method": "renderHomepage"},
+    {"hook": "filter:parse.post", "method": "parsePost", "priority": 99999 }
   ],
   "templates": "./templates",
   "staticDir": "./public",

@@ -4,7 +4,6 @@
 
 $('document').ready(function() {
 	$(window).on('action:ajaxify.end', function(err, data) {
-		console.log(JSON.stringify(data));
 		if (data.url === '' || data.url.match(/^news/)) {
 			$(window).trigger('action:topic.loaded');
 			$(window).trigger('action:news.loaded');

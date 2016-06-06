@@ -65,15 +65,15 @@
 
 		<ul component="topic" class="posts" data-tid="{tid}" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<!-- BEGIN topics -->
-			<h1 component="post/header" class="hidden-xs" itemprop="name">
-				<!-- IF !topics.noAnchor -->
-				<a href="{config.relative_path}/topic/{topics.slug}<!-- IF topics.bookmark -->/{topics.bookmark}<!-- ENDIF topics.bookmark -->" itemprop="url">{topics.title}</a><br />
-				<!-- ELSE -->
-				{topics.title}<br />
-				<!-- ENDIF !topics.noAnchor -->
-			</h1>
-			<hr class="visible-xs" />
 			<li component="post" class="<!-- IF topics.deleted -->deleted<!-- ENDIF topics.deleted -->"data-index="1" data-pid="{topics.mainPid}" data-uid="{topics.uid}" data-username="{topics.user.username}" data-userslug="{topics.user.userslug}" itemscope itemtype="http://schema.org/Comment">
+				<h1 component="post/header" itemprop="name">
+					<!-- IF !topics.noAnchor -->
+					<a href="{config.relative_path}/topic/{topics.slug}<!-- IF topics.bookmark -->/{topics.bookmark}<!-- ENDIF topics.bookmark -->" itemprop="url">{topics.title}</a><br />
+					<!-- ELSE -->
+					{topics.title}<br />
+					<!-- ENDIF !topics.noAnchor -->
+				</h1>
+				<hr class="visible-xs" />
 				<a component="post/anchor" data-index="1" name="1"></a>
 				<meta itemprop="datePublished" content="{topics.timestampISO}">
 				<div class="clearfix">
@@ -84,8 +84,6 @@
 							<!-- ELSE -->
 							<div component="user/picture" data-uid="{topics.user.uid}" class="user-icon" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
 							<!-- ENDIF topics.user.picture -->
-							<i component="user/status" class="fa fa-circle status {topics.user.status}" title="[[global:{topics.user.status}]]"></i>
-
 						</a>
 					</div>
 
@@ -128,7 +126,7 @@
 							<small>[[global:views]]</small>
 						</div>
 						<div class="btn-group action-bar">
-							<a class="btn btn-primary" href="{config.relative_path}/topic/{topics.slug}<!-- IF topics.bookmark -->/{topics.bookmark}<!-- ENDIF topics.bookmark -->" itemprop="url">Let's Discuss</a>
+							<a class="btn btn-primary" href="{config.relative_path}/topic/{topics.slug}<!-- IF topics.bookmark -->/{topics.bookmark}<!-- ENDIF topics.bookmark -->" itemprop="url">Read More</a>
 						</div>
 					</div>
 				</div>

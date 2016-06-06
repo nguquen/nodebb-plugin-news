@@ -14,7 +14,12 @@ var translator = require.main.require('./public/src/modules/translator');
 var categories = module.parent.require('./categories');
 var settings = module.parent.require('./settings');
 var newsPlugin = {};
-var defaultSettings = { opacity: '1.0', textShadow: 'none', name:"nodebb-plugin-news" };
+var defaultSettings = {
+	opacity: '1.0',
+	textShadow: 'none',
+	name:"nodebb-plugin-news",
+	more:'<span id="more" style="display:none"></span>'
+};
 
 newsPlugin.init = function(params, callback) {
 	newsPlugin.settings = new settings('recentcards', '1.0.0', defaultSettings);
@@ -91,6 +96,12 @@ newsPlugin.render = function(req, res, next) {
 			}
 			for (var i = 0; i < data.topics.length; ++i) {
 				if (data.topics[i]) {
+					if (posts[i] && posts[i].content) {
+						var index = posts[i].content.indexOf(newsPlugin.settings.get("more"));
+						if (index >= 0) {
+							posts[i].content = posts[i].content.substring(0, index) + "...";
+						}
+					}
 					data.topics[i].mainPost = posts[i];
 				}
 			}
@@ -200,5 +211,13 @@ function toggleMarkNews(tid, callback) {
 		});
 	});
 }
+
+newsPlugin.parsePost = function (data, callback) {
+	if (data && data.postData && data.postData.content) {
+		data.postData.content = data.postData.content.replace('<br />[more]<br />', newsPlugin.settings.get("more"));
+		data.postData.content = data.postData.content.replace('[more]', newsPlugin.settings.get("more"));
+	}
+	callback(null, data);
+};
 
 module.exports = newsPlugin;
