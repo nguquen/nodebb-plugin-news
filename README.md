@@ -15,4 +15,5 @@ npm i nodebb-plugin-news-botbie
 ![alt](https://i.gyazo.com/291e34be81298b189725b722b298169e.png)
 
 - You can mark/unmark a topic as news by using *Topic Tools*
+
 ![alt](https://i.gyazo.com/e4194d252cc288e0d92bb880a7df4f71.png)
