@@ -80,9 +80,9 @@
 					<div class="icon pull-left">
 						<a href="<!-- IF topics.user.userslug -->{config.relative_path}/user/{topics.user.userslug}<!-- ELSE -->#<!-- ENDIF topics.user.userslug -->">
 							<!-- IF topics.user.picture -->
-							<img component="user/picture" data-uid="{topics.user.uid}" src="{topics.user.picture}" align="left" itemprop="image" />
+							<img data-uid="{topics.user.uid}" src="{topics.user.picture}" align="left" itemprop="image" />
 							<!-- ELSE -->
-							<div component="user/picture" data-uid="{topics.user.uid}" class="user-icon" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
+							<div data-uid="{topics.user.uid}" class="user-icon" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
 							<!-- ENDIF topics.user.picture -->
 						</a>
 					</div>
