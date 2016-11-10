@@ -1,40 +1,41 @@
 <!-- Recent Cards plugin -->
-<ul class="categories">
-	<p>Recent Topics</p>
-</ul>
-
-<div class="row recent-cards" itemscope itemtype="http://www.schema.org/ItemList">
-	<!-- BEGIN recentTopics -->
-	<div component="categories/category" class="<!-- IF recentTopics.category.class -->{recentTopics.category.class}<!-- ELSE -->col-md-3 col-sm-6 col-xs-12<!-- ENDIF recentTopics.category.class --> category-item" data-cid="{recentTopics.category.cid}" data-numRecentReplies="{recentTopics.category.numRecentReplies}" style="text-shadow:{recentCards.textShadow};">
-		<meta itemprop="name" content="{recentTopics.category.name}">
-
-		<div class="category-icon">
-			<div class="bg" style="opacity:{recentCards.opacity};<!-- IF recentTopics.category.backgroundImage -->background-image: url({recentTopics.category.backgroundImage});<!-- ELSE --><!-- IF recentTopics.category.bgColor -->background-color: {recentTopics.category.bgColor};<!-- ENDIF recentTopics.category.bgColor --><!-- ENDIF recentTopics.category.backgroundImage -->"></div>
-			<a style="color: {recentTopics.category.color};" href="{config.relative_path}/topic/{recentTopics.slug}" itemprop="url">
-				<div
-					id="category-{recentTopics.category.cid}" class="category-header category-header-image-{recentTopics.category.imageClass}"
-					style="color: {recentTopics.category.color};"
-				>
-					<!-- IF recentTopics.category.icon -->
-					<div><i class="fa {recentTopics.category.icon} fa-4x hidden-xs"></i></div>
-					<!-- ENDIF recentTopics.category.icon -->
+<!-- IF topics.length -->
+<div class="recent-cards-plugin">
+	<ul class="categories">
+		<p>{recentCards.title}</p>
+	</ul>
+	
+	<ul class="row recent-cards preventSlideOut carousel-mode" itemscope itemtype="http://www.schema.org/ItemList">
+		<!-- BEGIN topics -->
+		<li class="<!-- IF topics.category.class -->{topics.category.class}<!-- ELSE -->col-md-3 col-sm-6 col-xs-12<!-- ENDIF topics.category.class --> category-item" data-cid="{topics.category.cid}" data-numRecentReplies="{topics.category.numRecentReplies}" style="text-shadow:{recentCards.textShadow};">
+			<meta itemprop="name" content="{topics.category.name}">
+	
+			<a style="color: {topics.category.color};" href="{config.relative_path}/topic/{topics.slug}" itemprop="url">
+				<div class="recent-card">
+					<div class="bg" style="opacity:{recentCards.opacity};<!-- IF topics.category.image -->background-image: url({topics.category.image});<!-- ELSE --><!-- IF topics.category.bgColor -->background-color: {topics.category.bgColor};<!-- ENDIF topics.category.bgColor --><!-- ENDIF topics.category.image -->"></div>
+					<div class="topic-info" style="color: {topics.category.color};">
+						<span class="h4" itemprop="description">{topics.title}</span>
+						<br>
+						<span class="description"><strong>{topics.category.name}</strong> <span class="timeago" title="{topics.teaser.timestampISO}"></span></span>
+					</div>
+	
+					<div class="post-count" style="color: {topics.category.color};">
+						<span>{topics.postcount}</span>
+					</div>
+	
+					<!-- IF topics.category.icon -->
+					<div class="icon">
+						<i class="fa {topics.category.icon}"></i>
+					</div>
+					<!-- ENDIF topics.category.icon -->
 				</div>
 			</a>
-
-			<div class="category-box">
-				<div class="category-info" style="color: {recentTopics.category.color};">
-					<a href="{config.relative_path}/topic/{recentTopics.slug}" itemprop="url" style="color: {recentTopics.category.color};">
-						<h4><!-- IF recentTopics.category.icon --><i class="fa {recentTopics.category.icon} visible-xs-inline"></i> <!-- ENDIF recentTopics.category.icon -->{recentTopics.title}</h4>
-						<div class="description" itemprop="description"><strong>{recentTopics.category.name}</strong> <span class="timeago" title="{recentTopics.teaser.timestampISO}"></span></div>
-					</a>
-				</div>
-			</div>
-
-			<span class="post-count" style="color: {recentTopics.category.color};">{recentTopics.postcount}</span>
-		</div>
-	</div>
-	<!-- END recentTopics -->
+		</li>
+		<!-- END topics -->
+	</ul>
+	<br />
 </div>
+<!-- ENDIF topics.length -->
 <hr />
 
 <!-- IF breadcrumbs.length -->
